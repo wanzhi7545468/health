@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.itheima.dao.CheckGroupDao">
+    <insert id="addCheckGroup" parameterType="checkGroup">
+        <selectKey resultType="int" order="AFTER" keyProperty="id">
+            select last_insert_id()
+        </selectKey>
+        insert into t_checkgroup values(null,#{code},#{name},#{helpCode},#{sex},#{remark},#{attention})
+    </insert>
+    <select id="findPage" resultType="CheckGroup">
+        select * from t_checkgroup
+        <if test="value!=null and value.length>0">
+            where code like #{value} or name like #{value} or helpCode like #{value}
+        </if>
+    </select>
+    <resultMap id="baseResultMap" type="CheckGroup">
+        <id column="id" property="id"></id>
+        <result column="code" property="code"></result>
+        <result column="name" property="name"></result>
+        <result column="helpCode" property="helpCode"></result>
+        <result column="sex" property="sex"></result>
+        <result column="remark" property="remark"></result>
+        <result column="attention" property="attention"></result>
+    </resultMap>
+    <resultMap id="findCheckGroupBySetmealIdResultMap" type="CheckGroup" extends="baseResultMap">
+        <collection property="checkItems" javaType="arraylist" ofType="checkItem" column="id" select="com.itheima.dao.CheckItemDao.findCheckItemsByCheckGroupId" ></collection>
+    </resultMap>
+    <select id="findCheckGroupBySetmealId" resultMap="findCheckGroupBySetmealIdResultMap">
+        SELECT * FROM t_checkgroup WHERE id IN (SELECT checkgroup_id FROM t_setmeal_checkgroup WHERE setmeal_id = #{id})
+    </select>
+</mapper>

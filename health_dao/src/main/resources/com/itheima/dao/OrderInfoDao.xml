@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.itheima.dao.OrderInfoDao">
+    <insert id="setOrder" parameterType="order" >
+        <selectKey resultType="int" order="AFTER" keyProperty="id">
+            select last_insert_id()
+        </selectKey>
+        insert into t_order values(null,#{memberId},#{orderDate},#{orderType},#{orderStatus},#{setmealId})
+    </insert>
+    <resultMap id="findByIdResultMap" type="order">
+        <result column="memberName" property="memberName"></result>
+        <result column="setmealName" property="setmealName"></result>
+        <result column="orderDate" property="orderDate"></result>
+        <result column="orderType" property="orderType"></result>
+    </resultMap>
+    <select id="findById" resultMap="findByIdResultMap">
+        SELECT t_member.`name` memberName ,t_setmeal.`name` setmealName,t_order.`orderDate` orderDate,t_order.`orderType` orderType FROM t_order,t_member,t_setmeal WHERE t_order.`member_id`=t_member.`id` AND t_order.`setmeal_id`=t_setmeal.`id` AND t_order.`id`=#{id}
+    </select>
+</mapper>
