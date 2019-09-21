@@ -18,7 +18,7 @@ public class DateUtils {
         if (dateString == null) {
             return null;
         }
-        return null;
+        return new Date();
     }
 
 
